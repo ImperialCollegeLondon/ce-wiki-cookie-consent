@@ -13,8 +13,10 @@
     gtag('consent', 'default', {
         'ad_storage': 'denied',
         'analytics_storage': 'denied',
-        'wait_for_update': 500  // milliseconds
+        'wait_for_update': 500  // milliseconds, gives Osano time to load https://developers.google.com/gtagjs/devguide/consent#asynchronous_tools
     });
+    // Use fallback when analytics_storage still denied https://developers.google.com/gtagjs/devguide/consent#url_passthrough
+    gtag('set', 'url_passthrough', true);
     
     // Now load GA
     gtag('js', new Date());
