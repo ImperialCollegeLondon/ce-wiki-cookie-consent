@@ -3,8 +3,26 @@
 </head>
 <body>
 
+<!-- fun JS hack to only include external files once -->
+<script>
+    function addElementToHeadOnce(d, e) {
+        if (d.getElementById(e.id) == null) {
+            d.getElementsByTagName('head')[0].appendChild(e);
+        }
+    }
+</script>
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-172324691-1"></script>
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-172324691-1"></script> -->
+<script>
+    (function(d, e) {
+        e = d.createElement('script');
+        e.async = true;
+        e.src = 'https://www.googletagmanager.com/gtag/js?id=UA-172324691-1';
+        e.id = 'ce-wiki-gtag-js';
+        addElementToHeadOnce(d, e);
+    })(document);
+</script>
 <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -36,7 +54,17 @@
 </script>
 
 <!-- load Osano CSS-->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" /> -->
+<script>
+    (function(d, e) {
+        e = d.createElement('link');
+        e.rel = 'stylesheet';
+        e.type = 'text/css';
+        e.href = 'https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css';
+        e.id = 'ce-wiki-osano-css';
+        addElementToHeadOnce(d, e);
+    })(document);
+</script>
 <style>
     .cc-revoke, .cc-window {
         font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
@@ -47,7 +75,16 @@
 <p>Implementing <a href="https://www.osano.com/cookieconsent">Osano Cookie Consent</a> and <a href="https://developers.google.com/gtagjs/devguide/consent">Google Consent Mode</a> for <code>gtag.js</code></p>
 
 <!-- load Osano -->
-<script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script> -->
+<script>
+    (function(d, e) {
+        e = d.createElement('script');
+        e.async = true;
+        e.src = 'https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js';
+        e.id = 'ce-wiki-osano-js';
+        addElementToHeadOnce(d, e);
+    })(document);
+</script>
 <!-- adjust Osano settings -->
 <!-- https://www.osano.com/cookieconsent/documentation/javascript-api/ -->
 <script>
