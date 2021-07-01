@@ -52,15 +52,16 @@ gtag('set', {
     'cookie_prefix': 'ce_wiki',
     'cookie_domain': 'wiki.imperial.ac.uk'
 });
-// gtag config options
-gtag_opts = {};
-gtag_opts.anonymize_ip = true; // required for GDPR compliance when tracking without user consent
-const user = AJS.Meta.get("remote-user");
-if (user) {
-    gtag_opts.user_id = await digestMessage(user);
-}
+
+// User ID
+digestMessage(AJS.Meta.get("remote-user")).then(function(result){
+    gtag('set', {'user_id': result}); // use gtag set so that it propagates to the connected GA4 tag too 
+});
+
 // send hit to Universal Analytics property
-gtag('config', 'UA-172324691-1', gtag_opts);
+gtag('config', 'UA-172324691-1', {
+    'anonymize_ip': true // required for GDPR compliance when tracking without user consent
+});
 // send hit to GA4 (new version) property
 // this is automatically done via a connection from the tag above
 // IP address is automatically anonymised for GA4
