@@ -61,10 +61,15 @@
         'cookie_prefix': 'ce_wiki',
         'cookie_domain': 'wiki.imperial.ac.uk'
     });
+    // gtag config options
+    gtag_opts = {};
+    gtag_opts.anonymize_ip = true; // required for GDPR compliance when tracking without user consent
+    const user = AJS.Meta.get("remote-user");
+    if (user) {
+        gtag_opts.user_id = await digestMessage(user);
+    }
     // send hit to Universal Analytics property
-    gtag('config', 'UA-172324691-1', {
-        'anonymize_ip': true // required for GDPR compliance when tracking without user consent
-    });
+    gtag('config', 'UA-172324691-1', gtag_opts);
     // send hit to GA4 (new version) property
     // this is automatically done via a connection from the tag above
     // IP address is automatically anonymised for GA4
@@ -190,19 +195,6 @@
         const hashArray = Array.from(new Uint8Array(hashBuffer)); // convert buffer to byte array
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
         return hashHex;
-    }
-
-    async function setUID() {
-        const user = AJS.Meta.get("remote-user");
-        const key = AJS.Meta.get("remote-user-key");
-        if (user && key) {
-            const UID = await digestMessage(user+key);
-            gtag('config', 'G-JL2C1YVFNX', {
-                'user_id': UID
-            });
-        } else {
-            gtag('config', 'G-JL2C1YVFNX');
-        }
     }
 </script>
 </body>
