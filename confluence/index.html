@@ -49,6 +49,9 @@
     });
     // Use fallback when analytics_storage still denied https://developers.google.com/gtagjs/devguide/consent#url_passthrough
     gtag('set', 'url_passthrough', true);
+    // Prevent analytics data from being used for ads personalisation
+    // https://developers.google.com/analytics/devguides/collection/ga4/display-features#disable_advertising_personalization
+    gtag('set', 'allow_ad_personalization_signals', false);
     
     // Now load GA
     gtag('js', new Date());
