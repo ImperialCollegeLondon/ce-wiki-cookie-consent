@@ -4,7 +4,7 @@
 // fun JS hack to only include external files once
 function addElementToHeadOnce(d, e) {
     if (d.getElementById(e.id) == null) {
-        d.getElementsByTagName('head')[0].appendChild(e);
+        d.head.appendChild(e);
         console.debug(`element with ID ${e.id} inserted into DOM`,e);
     } else {
         console.warn(`element with matching ID ${e.id} already exists in DOM`,e);
