@@ -1,10 +1,11 @@
-<script>
+<script id="ce-wiki-master-js">
 (function(){
 
 // fun JS hack to only include external files once
 function addElementToHeadOnce(d, e) {
     if (d.getElementById(e.id) == null) {
         d.getElementsByTagName('head')[0].appendChild(e);
+        console.debug(`element with ID ${e.id} inserted into DOM`,e);
     } else {
         console.warn(`element with matching ID ${e.id} already exists in DOM`,e);
     }
@@ -53,11 +54,6 @@ gtag('set', {
     'cookie_domain': 'wiki.imperial.ac.uk'
 });
 
-// User ID
-digestMessage(AJS.Meta.get("remote-user")).then(function(result){
-    gtag('set', {'user_id': result}); // use gtag set so that it propagates to the connected GA4 tag too 
-});
-
 // send hit to Universal Analytics property
 gtag('config', 'UA-172324691-1', {
     'anonymize_ip': true // required for GDPR compliance when tracking without user consent
@@ -79,7 +75,7 @@ gtag('config', 'UA-172324691-1', {
 // https://www.osano.com/cookieconsent/documentation/javascript-api/
 window.cookieconsent.initialise({
     content: {
-        message: "We use optional third-party analytics cookies to better understand how you use this site.",
+        message: "To better understand how you use this site, we'd like to use optional third-party analytics cookies and a pseudonymised identifier.",
         allow: "Accept"
     },
     position: "bottom-right",
@@ -104,38 +100,58 @@ window.cookieconsent.initialise({
     onInitialise: function (status) {
         var type = this.options.type;
         var didConsent = this.hasConsented();
-        console.log(didConsent ? 'enable cookies' : 'disable cookies');
+        console.debug('onInitialise:\t' + (didConsent ? 'enable cookies' : 'disable cookies'),this);
         if (type == 'opt-in' && didConsent) {
-            gtag('consent', 'update', {'analytics_storage': 'granted'});
+            goUserConsentTrue()
         }
         if (type == 'opt-out' && !didConsent) {
-            gtag('consent', 'update', {'analytics_storage': 'denied'});
+            goUserConsentFalse()
         }
     },
     onStatusChange: function(status) {
         var type = this.options.type;
         var didConsent = this.hasConsented();
-        console.log(didConsent ? 'enable cookies' : 'disable cookies');
+        console.debug('onStatusChange:\t' + (didConsent ? 'enable cookies' : 'disable cookies'),this);
         if (type == 'opt-in' && didConsent) {
-            gtag('consent', 'update', {'analytics_storage': 'granted'});
+            goUserConsentTrue()
         }
         if (type == 'opt-out' && !didConsent) {
-            gtag('consent', 'update', {'analytics_storage': 'denied'});
+            goUserConsentFalse()
         }
     },
     onRevokeChoice: function() {
         var type = this.options.type;
         if (type == 'opt-in') {
-            gtag('consent', 'update', {'analytics_storage': 'denied'});
+            goUserConsentFalse()
         }
         if (type == 'opt-out') {
-            gtag('consent', 'update', {'analytics_storage': 'granted'});
+            goUserConsentTrue()
         }
     }
 });
 
+// actions to take once a user consents
+function goUserConsentTrue() {
+    // allow GA to set/read cookies
+    gtag('consent', 'update', {'analytics_storage': 'granted'});
+    // send the User ID
+    digestMessage(AJS.Meta.get("remote-user")).then(function(result){
+        gtag('set', {'user_id': result}); // use gtag set so that it propagates to the connected GA4 tag too 
+    });
+    // send the cohort_year property
+    setUserCohortYear();
+}
+
+// actions to take if a user doesn't consent
+function goUserConsentFalse() {
+    // prevent GA from setting/reading cookies
+    gtag('consent', 'update', {'analytics_storage': 'denied'});
+    // still send the cohort_year property (this is not PII since it doesn't identify the individual)
+    setUserCohortYear();
+}
+
 // GA extensions
-async function getUserCohortYear() {
+function setUserCohortYear() {
     const userSuffix = AJS.Meta.get("remote-user").slice(-2);
     if (/^\d{2}$/.test(userSuffix)) {
         gtag('set', 'user_properties', {
@@ -143,16 +159,6 @@ async function getUserCohortYear() {
         });
     }
 }
-getUserCohortYear();
-
-async function getWikiSpaceKey() {
-    if (spaceKey = AJS.Meta.get("space-key")) {
-        gtag('event', 'page_view', {
-            'wiki_space_key': spaceKey
-        });
-    }
-}
-// getWikiSpaceKey();
 
 async function digestMessage(message) {
     const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
