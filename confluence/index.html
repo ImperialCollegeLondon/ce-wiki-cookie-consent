@@ -113,9 +113,10 @@ async function digestMessage(message) {
 <!-- load Osano after everything else -->
 <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js" id="ce-wiki-osano-js"></script>
 <script id="ce-wiki-osano-js-config">
+
 // adjust Osano settings
 // https://www.osano.com/cookieconsent/documentation/javascript-api/
-window.cookieconsent.initialise({
+var cookieconsent_options = {
     content: {
         message: "To better understand how you use this site, we'd like to use optional third-party analytics cookies and a pseudonymised identifier.",
         allow: "Accept"
@@ -169,8 +170,22 @@ window.cookieconsent.initialise({
         if (type == 'opt-out') {
             goUserConsentTrue()
         }
-    }
-});
+    },
+    autoAttach: false
+};
+
+// manually initialise Osano so we only ever have 1 instance
+if (!cookieconsent_instance) {
+    var cookieconsent_instance = new cookieconsent.Popup(cookieconsent_options);
+    console.debug('intialised cookie consent',cookieconsent_instance);
+    document.body.append(cookieconsent_instance.element,cookieconsent_instance.revokeBtn);
+}
+// var cookieconsent_instance = cookieconsent_instance || new cookieconsent.Popup(cookieconsent_options);
+// cookieconsent_instance.element.id = 'ce-wiki-osano-banner';
+// appendChildIfUnique(document.body,cookieconsent_instance.element);
+// cookieconsent_instance.revokeBtn.id = 'ce-wiki-osano-revoke';
+// appendChildIfUnique(document.body,cookieconsent_instance.revokeBtn);
+
 </script>
 <style id="ce-wiki-osano-css-custom">
     .cc-revoke, .cc-window {
