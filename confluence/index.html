@@ -1,9 +1,9 @@
 <script id="ce-wiki-master-js">
 
 // fun JS hack to only include external files once
-function addElementToHeadOnce(d, e) {
-    if (d.getElementById(e.id) == null) {
-        d.head.appendChild(e);
+function appendChildIfUnique(p, e) {
+    if (p.children[e.id] == null) {
+        p.appendChild(e);
         console.debug(`element with ID ${e.id} inserted into DOM`,e);
     } else {
         console.warn(`element with matching ID ${e.id} already exists in DOM`,e);
@@ -16,7 +16,7 @@ function addElementToHeadOnce(d, e) {
     e.async = true;
     e.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_HTMLorMML';
     e.id = 'ce-wiki-mathjax-js';
-    addElementToHeadOnce(d, e);
+    appendChildIfUnique(d.head, e);
 })(document);
 
 // load Google Analytics Global site tag (gtag.js)
@@ -25,7 +25,7 @@ function addElementToHeadOnce(d, e) {
     e.async = true;
     e.src = 'https://www.googletagmanager.com/gtag/js?id=UA-172324691-1';
     e.id = 'ce-wiki-gtag-js';
-    addElementToHeadOnce(d, e);
+    appendChildIfUnique(d.head, e);
 })(document);
 
 // GA configuration
@@ -106,7 +106,7 @@ async function digestMessage(message) {
     e.type = 'text/css';
     e.href = 'https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css';
     e.id = 'ce-wiki-osano-css';
-    addElementToHeadOnce(d, e);
+    appendChildIfUnique(d.head, e);
 })(document);
 
 </script>
