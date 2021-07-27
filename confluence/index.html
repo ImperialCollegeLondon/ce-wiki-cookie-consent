@@ -43,17 +43,14 @@ gtag('set', 'url_passthrough', true);
 // Prevent analytics data from being used for ads personalisation
 // https://developers.google.com/analytics/devguides/collection/ga4/display-features#disable_advertising_personalization
 gtag('set', 'allow_ad_personalization_signals', false);
-
-// Now load GA
-gtag('js', new Date());
-// configuration to apply to both properties
+// restrict GA to our own cookies (don't use any set on the main Imperial site)
 gtag('set', {
-    // restrict GA to our own cookies (don't use any set on the main Imperial site)
     'cookie_prefix': 'ce_wiki',
     'cookie_domain': 'wiki.imperial.ac.uk'
 });
 
 // send hit to Universal Analytics property
+gtag('js', new Date());
 gtag('config', 'UA-172324691-1', {
     'anonymize_ip': true // required for GDPR compliance when tracking without user consent
 });
