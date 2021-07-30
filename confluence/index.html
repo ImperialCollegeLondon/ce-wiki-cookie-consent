@@ -63,12 +63,7 @@ function goUserConsentTrue() {
     // allow GA to set/read cookies
     gtag('consent', 'update', {'analytics_storage': 'granted'});
     // send the User ID
-    var shortcode = AJS.Meta.get("remote-user");
-    if (shortcode) {
-        digestMessage(shortcode).then(function(result){
-            gtag('set', {'user_id': result}); // use gtag set so that it propagates to the connected GA4 tag too 
-        });
-    }
+    setUserID();
     // send the cohort_year property
     setUserCohortYear();
 }
@@ -87,6 +82,15 @@ function setUserCohortYear() {
     if (/\d{2}$/.test(userSuffix)) {
         gtag('set', 'user_properties', {
             cohort_year: userSuffix
+        });
+    }
+}
+
+function setUserID() {
+    var shortcode = AJS.Meta.get("remote-user");
+    if (shortcode) {
+        digestMessage(shortcode).then(function(result){
+            gtag('set', {'user_id': result}); // use gtag set so that it propagates to the connected GA4 tag too 
         });
     }
 }
